@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="../phaser.js"></script>
+	<script>
+		var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-container', { create: create });
+		
+		function create() {
+			//add a graphics class to the game situated at (0, 0) in the game container
+			//Phaser's Graphics class derives from PIXI.Graphics, which is where a lot of its
+			//methods come from (which is why they're not in the Phaser documentation)
+			var graphics = game.add.graphics(0, 0);
+			
+			//draw some semi-transparent, overlapping circles
+			graphics.beginFill(0xff0000, 0.5);
+			graphics.drawCircle(game.world.centerX - 75, game.world.centerY - 50, 100);
+			graphics.beginFill(0x00ff00, 0.5);
+			graphics.drawCircle(game.world.centerX + 75, game.world.centerY - 50, 100);
+			graphics.beginFill(0x0000ff, 0.5);
+			graphics.drawCircle(game.world.centerX, game.world.centerY + 50, 100);
+			
+			//draw a rectangle with a border
+			graphics.beginFill(0x808080, 1.0);
+			graphics.lineStyle(3, 0xdddddd, 1.0);
+			graphics.drawRect(30, 30, 200, 100);
+			
+			//draw some crossing lines
+			graphics.lineStyle(20, 0xffcc00, 1.0);
+			graphics.moveTo(780, 30);
+			graphics.lineTo(550, 80);
+			graphics.moveTo(550, 30);
+			graphics.lineTo(780, 120);
+			
+			//draw a polygon from line segments
+			graphics.lineStyle(10, 0x00ffff, 0.5);
+			graphics.beginFill(0x00a0a0, 1);
+			graphics.moveTo(500,550);
+			graphics.lineTo(750,570);
+			graphics.lineTo(780,300);
+			graphics.lineTo(750,150);
+			graphics.lineTo(480,450);
+			graphics.lineTo(500,550);
+			graphics.endFill();
+			
+			//draw a triangle
+			graphics.lineStyle(5, 0xff8800, 0.75);
+			graphics.beginFill(0xdd0000, 1.0);
+			graphics.drawTriangle([new Phaser.Point(20, 400),
+								   new Phaser.Point(180, 580),
+								   new Phaser.Point(20, 580)]);
+		}
+	</script>
+</head>
+<body>
+	<div id="phaser-container"/>
+</body>
+</html>
