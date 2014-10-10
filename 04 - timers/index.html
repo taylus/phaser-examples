@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="../phaser.js"></script>
+	<script>		
+		//this example demonstrates having some logic run every frame (via the game update loop)
+		//as well as having some logic run on a schedule controlled by a timer
+		var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-container', { create: create, render: render, update: update });
+		var pulseUp = true;
+		var timer, text;
+		
+		//called once upon game creation
+		function create() {
+			text = game.add.text(game.world.centerX, game.world.centerY, 'Hello world!', 
+				{font: 'bold 48pt Arial', fill: 'white', stroke: 'black', strokeThickness: 8});
+			text.anchor.set(0.5, 0.5);
+		
+			//set up a timer to update the text color every 500ms
+			timer = game.time.create(false);
+			timer.loop(500, randomizeTextColor, this);
+			timer.start();
+		}
+		
+		//called each frame by the game loop
+		function update() {
+			pulseBackgroundBlue();
+			rotateText();
+		}
+		
+		//called each frame after the regular WebGL/canvas rendering
+		//use to draw post-render effects or debug overlays
+		function render() {
+			//display debug info for the timer rotating the text
+			game.debug.timer(timer, 10, 20, 'white');
+		}
+		
+		//spin the game's text in a circle
+		function rotateText() {
+			text.angle++;
+			if (text.angle >= 360) text.angle = 0;
+		}
+		
+		//randomly sets the game's spinning text to a new color
+		function randomizeTextColor() {
+			var r = game.rnd.between(0, 255);
+			var g = game.rnd.between(0, 255);;
+			var b = game.rnd.between(0, 255);;
+			text.fill = "rgb(" + r + ", " + g + ", " + b + ")";
+		}
+		
+		//shift the background color up and down through the blue shades
+		function pulseBackgroundBlue() {
+			if (pulseUp) {
+				game.stage.backgroundColor++;
+				pulseUp = game.stage.backgroundColor < 0x0000ff;
+			}
+			else {
+				game.stage.backgroundColor--;
+				pulseUp = game.stage.backgroundColor <= 0x000000;
+			}
+		}
+	</script>
+</head>
+<body>
+	<div id="phaser-container"/>
+</body>
+</html>
