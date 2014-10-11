@@ -9,7 +9,7 @@
 	<script>		
 		//this example demonstrates having some logic run every frame (via the game update loop)
 		//as well as having some logic run on a schedule controlled by a timer
-		var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-container', { create: create, render: render, update: update });
+		var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-container', { create: create, render: render, update: update });
 		var pulseUp = true;
 		var timer, text;
 		
