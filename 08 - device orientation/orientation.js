@@ -32,7 +32,8 @@
         rotationGamma = eventData.gamma;
         
         //beta seems to be the "roll" axis on iOS, but MDN warns that devices differ...
-        sprite.angle = rotationBeta;
+        //beta ranges from -180 to 180, so adding 180 to keep a positive sprite angle
+        sprite.angle = rotationBeta + 180;
     }
     
     function render() {
