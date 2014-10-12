@@ -7,6 +7,7 @@
     var ANIM_FPS = 3;         //how many frames per second animations should be
     var SHEET_X = 20;         //x coordinate where the full sprite sheet is drawn
     var SHEET_Y = 20;         //y coordinate where the full sprite sheet is drawn
+    var BUTTON_SIZE = 64;     //size of arrow buttons (alternative to keyboard input)
     
     var game = new Phaser.Game(window.innerWidth || 800, window.innerHeight || 600, Phaser.CANVAS, 'phaser-game', 
         { preload: preload, create: create, render: render});
@@ -19,10 +20,16 @@
         
         //and another copy as a spritesheet proper, with frames of 16x24 pixels
         game.load.spritesheet('player', 'locke_ff6.png', FRAME_WIDTH, FRAME_HEIGHT);
+        
+        //load a button sprite sheet, so mobile users can press buttons to change the animation
+        game.load.spritesheet('buttons', 'buttons.png', BUTTON_SIZE, BUTTON_SIZE);
     }
     
     //game create callback: initialize all objects
     function create() {
+        //make the background dark gray to make it easier to see black in the sprites
+        game.stage.backgroundColor = 0x252525; 
+        
         //add a player sprite from the sprite sheet
         player = game.add.sprite(465, 160, 'player');
         player.anchor.set(0.5);
@@ -38,11 +45,51 @@
         
         drawSpriteSheet();
         setUpKeyboardInput();
+        setUpButtons();
+    }
+    
+    //center up/down/left/right buttons around the player as an alternative to keyboard input
+    function setUpButtons() {
+        var x = player.x - (BUTTON_SIZE / 2), y = player.y - (BUTTON_SIZE / 2), PADDING = 8;
+        
+        var upButton = game.add.button(x, y - ((FRAME_HEIGHT + BUTTON_SIZE) / 2 + PADDING), 'buttons', null, null, 0, 0, 1, 0);
+        upButton.name = "up";
+        upButton.onInputDown.add(buttonDown);
+        
+        var downButton = game.add.button(x, y + ((FRAME_HEIGHT + BUTTON_SIZE) / 2 + PADDING), 'buttons', null, null, 6, 6, 7, 6);
+        downButton.name = "down";
+        downButton.onInputDown.add(buttonDown);
+        
+        var leftButton = game.add.button(x - (BUTTON_SIZE + PADDING), y, 'buttons', null, null, 2, 2, 3, 2);
+        leftButton.name = "left";
+        leftButton.onInputDown.add(buttonDown);
+        
+        var rightButton = game.add.button(x + (BUTTON_SIZE + PADDING), y, 'buttons', null, null, 4, 4, 5, 4);
+        rightButton.name = "right";
+        rightButton.onInputDown.add(buttonDown);
+    }
+    
+    //button press callback: makes button presses simulate respective keyboard keypresses
+    function buttonDown(button) {
+        switch (button.name) {
+            case "up":
+                updateAnimation(new Phaser.Key(game, Phaser.Keyboard.UP));
+                break;
+           case "down":
+                updateAnimation(new Phaser.Key(game, Phaser.Keyboard.DOWN));
+                break;
+           case "left":
+                updateAnimation(new Phaser.Key(game, Phaser.Keyboard.LEFT));
+                break;
+           case "right":
+                updateAnimation(new Phaser.Key(game, Phaser.Keyboard.RIGHT));
+                break;
+        }
     }
     
     //game render callback: draw any post-render or debug effects
     function render() {
-        debugAnimationInfo(player, 340, 300);
+        debugAnimationInfo(player, 340, 304);
         game.debug.text("Press the arrow keys or WASD to change animation.", 10, 360);
         game.debug.text("If you're on mobile, calm down, I'll add buttons once I learn how.", 10, 380);
         
