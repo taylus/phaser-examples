@@ -32,7 +32,7 @@
         rotationGamma = eventData.gamma;
         
         //beta seems to be the "roll" axis on iOS, but MDN warns that devices differ...
-        sprite.rotation = rotationBeta;
+        sprite.angle = rotationBeta;
     }
     
     function render() {
