@@ -27,7 +27,7 @@
     }
     
     function render() {
-        orientationText.text = "Device Orientation:\n\nAlpha: " + rotationAlpha + 
-            "\nBeta: " + rotationBeta + "\nGamma: " + rotationGamma;
+        orientationText.text = "Device Orientation:\n\nAlpha: " + Math.round(rotationAlpha) + 
+            "\nBeta: " + Math.round(rotationBeta) + "\nGamma: " + Math.round(rotationGamma);
     }
 }());
