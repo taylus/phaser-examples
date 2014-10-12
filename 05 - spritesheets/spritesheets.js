@@ -6,6 +6,8 @@
     var FRAME_HEIGHT = 24;    //height of each frame in pixels
     var SPRITE_SCALE = 4;     //scale multiplier for the sprite sheet
     var ANIM_FPS = 3;         //how many frames per second animations should be
+    var SHEET_X = 20;         //x coordinate where the full sprite sheet is drawn
+    var SHEET_Y = 20;         //y coordinate where the full sprite sheet is drawn
     
     var game = new Phaser.Game(window.innerWidth || 800, window.innerHeight || 600, Phaser.CANVAS, 'phaser-game', 
         { preload: preload, create: create, render: render});
@@ -48,6 +50,23 @@
         debugAnimationInfo(player, 340, 300);
         game.debug.text("Press the arrow keys or WASD to change animation.", 10, 360);
         game.debug.text("If you're on mobile, calm down, I'll add buttons once I learn how.", 10, 380);
+        
+        //draw a bounding box over the current frame in the sprite sheet
+        var rect = getFrameBounds(player.animations.currentFrame.index);
+        game.debug.rectangle(rect, 'white', false);
+    }
+    
+    //returns a rectangle of the spritesheet's frame bounds given a frame index
+    function getFrameBounds(index) {
+        //convert 1D index to 2D frame coordinates using modulo and int division
+        var x = index % FRAMES_WIDE;
+        var y = Math.floor(index / FRAMES_WIDE);
+        return {
+            x: (x * FRAME_WIDTH * SPRITE_SCALE) + SHEET_X, 
+            y: (y * FRAME_HEIGHT * SPRITE_SCALE) + SHEET_Y, 
+            width: FRAME_WIDTH * SPRITE_SCALE, 
+            height: FRAME_HEIGHT * SPRITE_SCALE
+        };
     }
     
     //set up the keyboard arrow and WASD keys to change the player sprite's current animation
@@ -87,7 +106,6 @@
     //draw the game's full sprite sheet with frame index numbers on top
     function drawSpriteSheet() {
         //show the whole spritesheet
-        var SHEET_X = 20, SHEET_Y = 20;
         var sheet = game.add.sprite(SHEET_X, SHEET_Y, 'spritesheet');
         sheet.smoothed = false;
         sheet.scale.set(SPRITE_SCALE);
