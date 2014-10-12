@@ -31,11 +31,16 @@
         rotationBeta = eventData.beta;
         rotationGamma = eventData.gamma;
         
-        sprite.angle = rotationAlpha
+        sprite.angle = rotationAlpha;
     }
     
     function render() {
-        orientationText.text = "Device Orientation:\n\nAlpha: " + Math.round(rotationAlpha) + 
+        var orientation = isDevicePortrait()? "Portrait" : "Landscape";
+        orientationText.text = "Device Orientation: " + orientation + "\n\nAlpha: " + Math.round(rotationAlpha) + 
             "\nBeta: " + Math.round(rotationBeta) + "\nGamma: " + Math.round(rotationGamma);
+    }
+    
+    function isDevicePortrait() {
+        return (game.scale.orientation === 0);
     }
 }());
