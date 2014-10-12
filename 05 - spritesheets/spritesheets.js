@@ -2,9 +2,8 @@
     'use strict';
     var FRAMES_WIDE = 4;      //width of sprite sheet in frames
     var FRAMES_TALL = 3;      //height of sprite sheet in frames
-    var FRAME_WIDTH = 16;     //width of each frame in pixels
-    var FRAME_HEIGHT = 24;    //height of each frame in pixels
-    var SPRITE_SCALE = 4;     //scale multiplier for the sprite sheet
+    var FRAME_WIDTH = 64;     //width of each frame in pixels
+    var FRAME_HEIGHT = 96;    //height of each frame in pixels
     var ANIM_FPS = 3;         //how many frames per second animations should be
     var SHEET_X = 20;         //x coordinate where the full sprite sheet is drawn
     var SHEET_Y = 20;         //y coordinate where the full sprite sheet is drawn
@@ -27,10 +26,6 @@
         //add a player sprite from the sprite sheet
         player = game.add.sprite(465, 160, 'player');
         player.anchor.set(0.5);
-        
-        //scale the sprite up, but disable antialiasing so it doesn't get all fuzzy
-        player.smoothed = false;
-        player.scale.set(SPRITE_SCALE);
         
         //define animations from frame numbers in the sprite sheet
         player.animations.add('walk_down', [0, 4, 0, 8]);
@@ -62,10 +57,10 @@
         var x = index % FRAMES_WIDE;
         var y = Math.floor(index / FRAMES_WIDE);
         return {
-            x: (x * FRAME_WIDTH * SPRITE_SCALE) + SHEET_X, 
-            y: (y * FRAME_HEIGHT * SPRITE_SCALE) + SHEET_Y, 
-            width: FRAME_WIDTH * SPRITE_SCALE, 
-            height: FRAME_HEIGHT * SPRITE_SCALE
+            x: (x * FRAME_WIDTH) + SHEET_X, 
+            y: (y * FRAME_HEIGHT) + SHEET_Y, 
+            width: FRAME_WIDTH, 
+            height: FRAME_HEIGHT
         };
     }
     
@@ -106,17 +101,15 @@
     //draw the game's full sprite sheet with frame index numbers on top
     function drawSpriteSheet() {
         //show the whole spritesheet
-        var sheet = game.add.sprite(SHEET_X, SHEET_Y, 'spritesheet');
-        sheet.smoothed = false;
-        sheet.scale.set(SPRITE_SCALE);
+        game.add.sprite(SHEET_X, SHEET_Y, 'spritesheet');
         
         //draw index numbers over each frame
         var i = 0;
         for (var y = 0; y < FRAMES_TALL; y++) {
             for (var x = 0; x < FRAMES_WIDE; x++) {
                 //ugly math to center the numbers
-                var centeredX = (x * FRAME_WIDTH * SPRITE_SCALE) + SHEET_X + (FRAME_WIDTH * SPRITE_SCALE / 2);
-                var centeredY = (y * FRAME_HEIGHT * SPRITE_SCALE) + SHEET_Y + (FRAME_HEIGHT * SPRITE_SCALE / 2);
+                var centeredX = (x * FRAME_WIDTH) + SHEET_X + (FRAME_WIDTH / 2);
+                var centeredY = (y * FRAME_HEIGHT) + SHEET_Y + (FRAME_HEIGHT / 2);
                 game.add.text(centeredX, centeredY, i.toString(), 
                     { font: 'bold 30pt Arial', fill: 'rgba(255, 255, 255, 0.5)', 
                       stroke: 'black', strokeThickness: 3 }).anchor.set(0.5);
