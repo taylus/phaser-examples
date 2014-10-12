@@ -10,9 +10,13 @@
     //if we're running on a desktop, only use the mouse pointer
     //if we're not, use all 10 additional pointers
     function create() {
-        pointers = [game.input.mousePointer];
-        if(!game.device.desktop) {
-            pointers.push(game.input.pointer1, game.input.pointer2);
+        if(game.device.desktop) {
+            //the mouse pointer is created by default
+            pointers = [game.input.mousePointer];
+        }
+        else {
+            //two pointers are created by default, fill out the rest
+            pointers = [game.input.pointer1, game.input.pointer2];
             for (var i = 3; i <= 10; i++) {
                 pointers.push(game.input.addPointer());
             }
