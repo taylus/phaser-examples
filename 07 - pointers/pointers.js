@@ -25,7 +25,6 @@
     
     //draw debug info for all pointers
     function render() {
-        game.debug.inputInfo(20, 30);
         for (var i = 0; i < pointers.length; i++) {
             game.debug.pointer(pointers[i]);
         }
