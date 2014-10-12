@@ -90,8 +90,7 @@
     //game render callback: draw any post-render or debug effects
     function render() {
         debugAnimationInfo(player, 340, 304);
-        game.debug.text("Press the arrow keys or WASD to change animation.", 10, 360);
-        game.debug.text("If you're on mobile, calm down, I'll add buttons once I learn how.", 10, 380);
+        game.debug.text("Press the arrow keys, WASD, or buttons to change animation.", 10, 360);
         
         //draw a bounding box over the current frame in the sprite sheet
         var rect = getFrameBounds(player.animations.currentFrame.index);
