@@ -7,14 +7,14 @@
     //initialize pointers
     //Phaser supports a mouse pointer and up to 10 additional pointers for touch input
     //it stores the mouse as game.input.mousePointer, and the others as pointer1, pointer2, ..., pointer10
-    //if we're running on a desktop, only use the mouse pointer
-    //if we're not, use all 10 additional pointers
+    //if the device is a desktop, only use the mouse pointer
+    //if the device supports touch, use all 10 touch pointers
     function create() {
         if(game.device.desktop) {
             //the mouse pointer is created by default
             pointers = [game.input.mousePointer];
         }
-        else {
+        else if(game.device.touch) {
             //two pointers are created by default, fill out the rest
             pointers = [game.input.pointer1, game.input.pointer2];
             for (var i = 3; i <= 10; i++) {
