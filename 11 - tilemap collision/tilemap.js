@@ -48,8 +48,9 @@
         game.camera.follow(player);
         game.camera.roundPx = false;
         
-        //buttons for mobile movement
+        //virtual d-pads for mobile movement
         setUpButtons(BUTTON_SIZE, game.height - (BUTTON_SIZE * 2));
+        setUpButtons(game.width - (BUTTON_SIZE * 2), game.height - (BUTTON_SIZE * 2));
     }
     
     //center a virtual direction pad of onscreen buttons as a mobile-friendly alternative to keyboard input
