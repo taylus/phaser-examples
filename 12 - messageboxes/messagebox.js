@@ -1,16 +1,22 @@
-(function() {
+var messageBoxesExample = (function() {
     'use strict';
-    var game = new Phaser.Game(window.innerWidth || 800, window.innerHeight || 600, Phaser.CANVAS, 'phaser-game', {create: create});
+    var game = new Phaser.Game(900, window.innerHeight || 600, Phaser.CANVAS, 'phaser-game', {create: create}, true);
     var message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sollicitudin metus non turpis malesuada scelerisque. ' +
                   'Cras ultricies elit nulla, ac tristique sem mollis vel. Vivamus nisl odio, ultricies eu accumsan eu, ultricies eu nunc. ' + 
                   'Nullam in lectus vel purus dignissim facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. ' + 
                   'Quisque nec mauris vehicula, venenatis nunc sed, posuere metus.';
     //message = 'Line one\nLine two\nLine three\nLine four\nLine five';
+    
+    //initialize demo page's input textarea
+    var textInput = document.getElementById('textInput');
+    if (textInput) {
+        textInput.value = message;
+    }
 
     var MSGBOX_X = 10;
     var MSGBOX_Y = 10;
     var MSGBOX_WIDTH = 400;
-    var MSGBOX_HEIGHT = 100;
+    var MSGBOX_HEIGHT = 94;
 
     //TODO: make configurable
     var BACKGROUND_COLOR = 0x303080;
@@ -21,23 +27,26 @@
 
     //game create callback: make a Phaser.Text, then chop it up into several to simulate RPG-style message boxes
     function create() {    
-        var graphics = game.add.graphics(0, 0);
-        
-        var textObject = new Phaser.Text(game, MSGBOX_X, MSGBOX_Y, message, {fill: 'white', font: '20pt Arial'});
+        loadMessageBoxesFromText(message);
+    }
+    
+    function loadMessageBoxesFromText(text) {
+        var textObject = new Phaser.Text(game, MSGBOX_X, MSGBOX_Y, text, {fill: 'white', font: 'bold 16pt Arial', stroke: 'black', strokeThickness: 4});
         textObject.wordWrap = true;
         textObject.wordWrapWidth = MSGBOX_WIDTH;
-        game.add.existing(textObject);
+        //game.add.existing(textObject);
         
+        var graphics = game.add.graphics(0, 0);
         var textBoxes = chopText(textObject, MSGBOX_WIDTH, MSGBOX_HEIGHT);
         for (var i = 0; i < textBoxes.length; i++) {
             var boxSpacing = 20;
-            var x = MSGBOX_X + MSGBOX_WIDTH + boxSpacing;
+            var x = MSGBOX_X /* + MSGBOX_WIDTH + boxSpacing */;
             var y = MSGBOX_Y + ((MSGBOX_HEIGHT + boxSpacing) * i);
             
             //draw background boxes
             graphics.beginFill(BACKGROUND_COLOR, BACKGROUND_ALPHA);
             graphics.lineStyle(BORDER_WIDTH, BORDER_COLOR, BORDER_ALPHA);
-            graphics.drawRect(x - BORDER_WIDTH, y - BORDER_WIDTH, MSGBOX_WIDTH, MSGBOX_HEIGHT);
+            graphics.drawRect(x - BORDER_WIDTH, y - BORDER_WIDTH, MSGBOX_WIDTH + (BORDER_WIDTH * 3), MSGBOX_HEIGHT);
         
             //add chopped Phaser.Texts
             textBoxes[i].position.set(x, y);
@@ -102,4 +111,9 @@
             wordWrapWidth: style.wordWrapWidth,
         };
     }
+    
+    return function() {
+        game.state.clearCurrentState();
+        loadMessageBoxesFromText(textInput.value);
+    };
 }());

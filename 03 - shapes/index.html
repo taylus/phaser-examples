@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -21,9 +21,12 @@
 			graphics.drawCircle(game.world.centerX, game.world.centerY + 50, 100);
 			
 			//draw a rectangle with a border
-			graphics.beginFill(0x808080, 1.0);
-			graphics.lineStyle(3, 0xdddddd, 1.0);
-			graphics.drawRect(30, 30, 200, 100);
+            //borders are centered around the edges of shapes, with half of the line width cutting into the shape, and the other half expanding outward
+            //so a 200 pixel wide rectangle with a 4 pixel border is really 204 pixels wide,
+            //and needs to be drawn starting at (2, 2) instead of (0, 0) or some of the border will be cut off
+			graphics.beginFill(0x777777, 1.0);
+			graphics.lineStyle(4, 0xdddddd, 1.0);
+			graphics.drawRect(2, 2, 200, 100);
 			
 			//draw some crossing lines
 			graphics.lineStyle(20, 0xffcc00, 1.0);

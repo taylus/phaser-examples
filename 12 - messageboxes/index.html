@@ -4,17 +4,32 @@
 	<meta charset="utf-8">
 	<title>Message Box Example</title>
     <style>
-        * {
-        margin: 0;
-        padding: 0;
+        * 
+        {
+            margin: 0;
+            padding: 0;
+        }
+        body
+        {
+            background-color: black;
+        }
+        #inputDiv
+        {
+            float: left;
+        }
+        #textInput
+        {
+            margin-top: 4px;
+            margin-left: 4px;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- TODO: let user input their own text
-    <textarea rows='4' style='width: 100%' id='textInput'>test</textarea>
-    <input type='button' value='Submit' onclick='generateMessageBoxes()'></input>
-    -->
+    <div id='inputDiv'>
+        <textarea id='textInput' rows='23' cols='32' autocomplete='off'></textarea>
+        <input type='button' value='Generate MessageBoxes!' onclick='messageBoxesExample()'></input>
+    </div>
 	<div id="phaser-game"></div>
 	<script src="../phaser.js"></script>
 	<script src="messagebox.js"></script>
