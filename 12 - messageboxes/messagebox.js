@@ -37,7 +37,7 @@
             //draw background boxes
             graphics.beginFill(BACKGROUND_COLOR, BACKGROUND_ALPHA);
             graphics.lineStyle(BORDER_WIDTH, BORDER_COLOR, BORDER_ALPHA);
-            graphics.drawRect(x - BORDER_WIDTH, y - BORDER_WIDTH, MSGBOX_WIDTH, MSGBOX_HEIGHT);
+            graphics.drawRect(x - BORDER_WIDTH, y - BORDER_WIDTH, MSGBOX_WIDTH + (BORDER_WIDTH * 2), MSGBOX_HEIGHT + (BORDER_WIDTH * 2));
         
             //add chopped Phaser.Texts
             textBoxes[i].position.set(x, y);
