@@ -1,13 +1,21 @@
 (function() {
     'use strict';
     var game = new Phaser.Game(window.innerWidth || 800, window.innerHeight || 600, Phaser.CANVAS, 'phaser-game', 
-        { preload: preload, create: create, render: render });
-    var rotationAlpha;
-    var rotationBeta;
-    var rotationGamma;
-    var orientationText;
+        { preload: preload, create: create, render: render, update: update });
     var sprite;
     var textureKeys = [];
+    var promise = new FULLTILT.getDeviceOrientation({ 'type': 'world' });
+    var deviceOrientation;
+    var rotation;
+    var orientationText;
+    
+    promise
+        .then(function(controller) {
+            deviceOrientation = controller;
+        })
+        .catch(function(error) {
+            console.error(error);
+        });
 
     //game preload callback: preloads all assets
     //I'm maintaining a separate array of loaded texture keys
@@ -49,21 +57,16 @@
         //debug text
         orientationText = game.add.text(10, 20);
         orientationText.fill = 'white';
-        
-        //set up a device orientation handler if the browser supports it
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', orientationEvent, false);
-        }
     }
     
-    //device orientation event callback: displays all axes and rotate the sprite
-    //according to alpha, which should be the device's "compass" heading 
-    function orientationEvent(eventData) {
-        rotationAlpha = eventData.alpha;
-        rotationBeta = eventData.beta;
-        rotationGamma = eventData.gamma;
-        
-        sprite.angle = rotationAlpha;
+    function update() {
+        rotation = deviceOrientation.getScreenAdjustedEuler();
+        if (rotation.beta >= 90) {
+            sprite.angle = -rotation.alpha;
+        }
+        else {
+            sprite.angle = rotation.alpha;
+        }
     }
     
     //sprite clicked/touched handler: change its texture
@@ -85,9 +88,8 @@
     //game render callback: draw debug text displaying device's orientation
     function render() {
         var orientation = isDevicePortrait()? "Portrait" : "Landscape";
-        orientationText.text = "Orientation: " + orientation + " (" + window.orientation + ")\n\nAlpha: " + Math.round(rotationAlpha) + 
-            "\nBeta: " + Math.round(rotationBeta) + "\nGamma: " + Math.round(rotationGamma);
-        
+        orientationText.text = "Orientation: " + orientation + " (" + window.orientation + ")\n\nAlpha: " + Math.round(rotation.alpha) + 
+            "\nBeta: " + Math.round(rotation.beta) + "\nGamma: " + Math.round(rotation.gamma);
     }
     
     //is the device in portrait mode, according to Phaser?
