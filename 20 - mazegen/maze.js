@@ -12,14 +12,14 @@
     };
     Cell.prototype.constructor = Cell;
     
-    var game = new Phaser.Game(window.innerWidth || 800, window.innerHeight || 600, 
-        Phaser.CANVAS, 'phaser-game', { create: create });
-    var graphics;
-    var cellStack = [];
-    var GRID_WIDTH = 24;    //grid width (in cells)
+    var GRID_WIDTH = 32;    //grid width (in cells)
     var GRID_HEIGHT = 14;   //grid height (in cells)
     var CELL_SIZE = 40;     //grid cell total width and height (in pixels)
-    var WALL_WIDTH = 3;     //grid wall/border width (in pixels)
+    var WALL_WIDTH = 1;     //grid wall/border width (in pixels)
+    var game = new Phaser.Game(GRID_WIDTH * CELL_SIZE, GRID_HEIGHT * CELL_SIZE, 
+        Phaser.CANVAS, 'phaser-game', { preload: preload, create: create });
+    var graphics;
+    var cellStack = [];
 
     var COLORS = {
         RED: 0xff0000,
@@ -29,6 +29,13 @@
         BLACK: 0x000000,
         WHITE: 0xffffff
     };
+    
+    //Phaser game pre-setup
+    function preload() {
+        //scale the game to fit its parent container
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.setScreenSize();
+    }
     
     //Phaser game setup
     function create() {
