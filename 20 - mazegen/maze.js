@@ -13,8 +13,8 @@
     Cell.prototype.constructor = Cell;
     
     var GRID_WIDTH = 32;    //grid width (in cells)
-    var GRID_HEIGHT = 14;   //grid height (in cells)
-    var CELL_SIZE = 40;     //grid cell total width and height (in pixels)
+    var GRID_HEIGHT = 15;   //grid height (in cells)
+    var CELL_SIZE = 32;     //grid cell total width and height (in pixels)
     var WALL_WIDTH = 1;     //grid wall/border width (in pixels)
     var game = new Phaser.Game(GRID_WIDTH * CELL_SIZE, GRID_HEIGHT * CELL_SIZE, 
         Phaser.CANVAS, 'phaser-game', { preload: preload, create: create });
