@@ -3,13 +3,13 @@
     var Cell = function(x, y, northWall, eastWall, southWall, westWall) {
         this.x = x;
         this.y = y;
-		this.northWall = northWall;
+        this.northWall = northWall;
         this.eastWall = eastWall;
         this.southWall = southWall;
         this.westWall = westWall;
         this.visited = false;
         this.color = COLORS.WHITE;
-	};
+    };
     Cell.prototype.constructor = Cell;
     
     var game = new Phaser.Game(window.innerWidth || 800, window.innerHeight || 600, 
