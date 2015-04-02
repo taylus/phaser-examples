@@ -42,11 +42,6 @@
         graphics = game.add.graphics(0, 0);
         var grid = createGrid(GRID_WIDTH, GRID_HEIGHT);        
         generateMaze(grid);
-        
-        //color a pair of starting and ending cells
-        //these can be any cells, since all the cells in the maze are connected
-        grid[0][0].color = COLORS.RED;
-        grid[GRID_WIDTH - 1][GRID_HEIGHT - 1].color = COLORS.RED;
         drawGrid(grid);
     }
     
@@ -142,6 +137,12 @@
                 currentCell.visited = true;
             }
         }
+        
+        //remove border walls from a start and end cell
+        var startCell = grid[0][0];
+        startCell.northWall = startCell.westWall = false;
+        var endCell = grid[GRID_WIDTH - 1][GRID_HEIGHT - 1];
+        endCell.southWall = endCell.eastWall = false;
     }
     
     //remove the walls between the given cells,
