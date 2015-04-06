@@ -68,7 +68,7 @@
         drawCell(endCell);
         
         //step up a timer that runs a single step of the maze generation every 30ms
-        mazeGenTimer = game.time.events.loop(30, generateMazeStep);
+        mazeGenTimer = game.time.events.loop(60, generateMazeStep);
     }
     
     //create a 2D grid of cells with the given dimensions
