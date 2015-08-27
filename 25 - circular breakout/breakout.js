@@ -93,6 +93,11 @@
     function ballPaddleAngleIntersect() {
         var fudgeFactor = Math.PI / 64;  //allow some leeway since the ball is a circle and not a point
         var ballAngle = getAngle(ball.circle.x, ball.circle.y, orbit.circle);
+        if (ballAngle < 0 && (Math.PI - paddle.centerAngle) <= (paddle.width / 2)) {
+            //if the paddle is near an angle discontinuity, adjust the ball angle
+            //Math.atan2 goes from pi to negative pi at 9 o'clock...!
+            ballAngle += (2 * Math.PI);
+        }
         return ballAngle >= paddle.startAngle - fudgeFactor && ballAngle <= paddle.endAngle + fudgeFactor;
     }
     
