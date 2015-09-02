@@ -17,6 +17,12 @@
         },
         get endAngle() {
             return this.centerAngle + this.width / 2;
+        },
+        get centerPoint() {
+            return {
+                x: orbit.circle.x + (Math.cos(this.centerAngle) * orbit.circle.radius),
+                y: orbit.circle.y + (Math.sin(this.centerAngle) * orbit.circle.radius)
+            };
         }
     };
     
@@ -24,8 +30,21 @@
         graphics: null,
         circle: null,
         velocity: null,
-        speed: 6,
-        MAX_BOUNCE_ANGLE: Math.PI / 8
+        speed: 8,
+        get angle() {
+            return getAngle(this.circle.x, this.circle.y, orbit.circle);
+        },
+        get pointOnOrbit() {
+            return {
+                x: orbit.circle.x + (Math.cos(this.angle) * orbit.circle.radius),
+                y: orbit.circle.y + (Math.sin(this.angle) * orbit.circle.radius)
+            };
+        },
+        reset: function() {
+            this.circle.x = orbit.circle.x - this.circle.radius;
+            this.circle.y = orbit.circle.y - this.circle.radius;
+            this.velocity = randomVelocity(this.speed);
+        }
     };
     
     function create() {
@@ -45,7 +64,7 @@
         ball.graphics = game.add.graphics(0, 0);
         ball.graphics.beginFill(0x777777, 1.0);
         ball.graphics.drawCircle(ball.circle.x, ball.circle.y, ball.circle.diameter);
-        resetBall();
+        ball.reset();
     }
     
     function update() {
@@ -57,8 +76,8 @@
         ball.circle.x += ball.velocity.x;
         ball.circle.y += ball.velocity.y;
         
-        if (ball.circle.x - ball.circle.radius < 0 || ball.circle.x + ball.circle.radius > game.width) resetBall();
-        if (ball.circle.y - ball.circle.radius < 0 || ball.circle.y + ball.circle.radius > game.height) resetBall();
+        if (ball.circle.x - ball.circle.radius < 0 || ball.circle.x + ball.circle.radius > game.width) ball.reset();
+        if (ball.circle.y - ball.circle.radius < 0 || ball.circle.y + ball.circle.radius > game.height) ball.reset();
         
         ball.graphics.x = ball.circle.x - ball.circle.radius;
         ball.graphics.y = ball.circle.y - ball.circle.radius;
@@ -66,34 +85,22 @@
         var ballDistance = distance(ball.circle.x, ball.circle.y, orbit.circle.x, orbit.circle.y);
         if (ballDistance + ball.circle.radius >= orbit.circle.radius) {
             if (ballPaddleAngleIntersect()) {
-                ball.velocity.x = -ball.velocity.x;
-                ball.velocity.y = -ball.velocity.y;
-                var bounceAngle = getBallBounceAngle();
-                console.log('bounce angle: ' + radiansToDegrees(bounceAngle));
-                //https://gamedev.stackexchange.com/questions/4253/in-pong-how-do-you-calculate-the-balls-direction-when-it-bounces-off-the-paddl
-                //ball.velocity.x = ball.speed * Math.cos(bounceAngle);
-                //ball.velocity.y = ball.speed * -Math.sin(bounceAngle);
+                var bounceVector = getBallBounceVector();
+                var dot = dotProduct(ball.velocity, bounceVector);
+                ball.velocity.x -= 2 * dot * bounceVector.x;
+                ball.velocity.y -= 2 * dot * bounceVector.y;
             }
             else {
-                resetBall();
+                ball.reset();
             }
         }
-        
-        //console.log('start: ' + paddle.startAngle + ' end:' + paddle.endAngle);
-    }
-    
-    //resets the ball's position and velocity
-    function resetBall() {
-        ball.circle.x = orbit.circle.x - ball.circle.radius;
-        ball.circle.y = orbit.circle.y - ball.circle.radius;
-        ball.velocity = randomVelocity(ball.speed);
     }
     
     //is the ball's point on the orbit circle within the paddle?
     function ballPaddleAngleIntersect() {
         var fudgeFactor = Math.PI / 64;  //allow some leeway since the ball is a circle and not a point
         var ballAngle = getAngle(ball.circle.x, ball.circle.y, orbit.circle);
-        if (ballAngle < 0 && (Math.PI - paddle.centerAngle) <= (paddle.width / 2)) {
+        if (ballAngle < 0 && (Math.PI - paddle.centerAngle) < (paddle.width / 2)) {
             //if the paddle is near an angle discontinuity, adjust the ball angle
             //Math.atan2 goes from pi to negative pi at 9 o'clock...!
             ballAngle += (2 * Math.PI);
@@ -101,12 +108,9 @@
         return ballAngle >= paddle.startAngle - fudgeFactor && ballAngle <= paddle.endAngle + fudgeFactor;
     }
     
-    function getBallBounceAngle() {
-        var ballAngle = getAngle(ball.circle.x, ball.circle.y, orbit.circle);
-        var angleDiff = paddle.centerAngle - ballAngle;
-        var normalizedAngleDiff = angleDiff / (paddle.width / 2);
-        //console.log(normalizedAngleDiff);
-        return normalizedAngleDiff * ball.MAX_BOUNCE_ANGLE;
+    //gets the unit vector between the point the ball bounce off the paddle and the ball's center
+    function getBallBounceVector() {
+        return unitVector(vectorBetween(ball.pointOnOrbit.x, ball.pointOnOrbit.y, ball.circle.x, ball.circle.y));
     }
     
     //returns the angle of the point (x, y) along the given circle
@@ -133,6 +137,34 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     
+    //returns the vector between the two given points
+    function vectorBetween(x1, y1, x2, y2) {
+        return {
+            x: x2 - x1,
+            y: y2 - y1,
+        };
+    }
+    
+    //returns the vector with length 1 and same direction as the given vector
+    function unitVector(vector) {
+        return {
+            x: vector.x / magnitude(vector),
+            y: vector.y / magnitude(vector)
+        };
+    }
+    
+    //returns the length of the given vector
+    function magnitude(vector) {
+        return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
+    }
+    
+    //returns the dot product between the two given vectors
+    //v2 * dot(v1, v2) is v1 projected onto v2
+    function dotProduct(vector1, vector2) {
+        return vector1.x * vector2.x + vector1.y * vector2.y;
+    }
+    
+    //converts radians to degrees (just used for debug printing)
     function radiansToDegrees(radians) {
         return radians * (180 / Math.PI);
     }
