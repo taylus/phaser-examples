@@ -2,6 +2,13 @@
     'use strict';
     var game = new Phaser.Game(375, 112, Phaser.CANVAS, 'phaser-game',
         { preload: preload, create: create, update: update, /*render: render*/ });
+        
+    //tilePosition.x for each row such that the images line up
+    var breakpoints = [
+        [0, -124, -249],
+        [0, 250, 125],
+        [0, -125, -251]
+    ];
     
     var Row = function(x, y, width, height, key, speed) {
         this.x = x;
@@ -10,8 +17,7 @@
         this.height = height;
         this.speed = speed;
         this.image = game.add.tileSprite(x, y, width, height, key);
-        this.tween = game.add.tween(this);
-        //this.positionTween = game.add.tween(this.image.tilePosition);
+        this.tween = game.add.tween(this.image.tilePosition);
         this.active = true;
     };
     
@@ -36,28 +42,32 @@
     }
     
     function create() {
-        var speed = 4;
+        var speed = 6;
         topRow = new Row(0, 0, 375, 39, 'top', -speed);
         middleRow = new Row(0, 39, 375, 53, 'middle', speed);
         bottomRow = new Row(0, 92, 375, 20, 'bottom', -speed);
         
-        var nextRowToStop = 0;
+        //topRow.image.tilePosition.x = breakpoints[0][2];
+        //middleRow.image.tilePosition.x = breakpoints[1][2];
+        //bottomRow.image.tilePosition.x = breakpoints[2][2];
+        
+        var breakpoint;
         game.input.onDown.add(function() {
-            if (nextRowToStop < 1) {
-                //topRow.active = false;
-                //topRow.positionTween.to({x: breakpoint}, 3000, Phaser.Easing.Back.Out).start();
-                topRow.tween.to({speed: 0}, 3000, Phaser.Easing.Linear.InOut).start();
+            if (topRow.active) {
+                topRow.active = false;
+                breakpoint = closest(topRow.image.tilePosition.x, breakpoints[0]) + (Math.sign(topRow.speed) * topRow.width * 3);
+                topRow.tween.to({x: breakpoint}, 4000, Phaser.Easing.Linear.In).start();
             }
-            else if (nextRowToStop < 2) {
-                middleRow.tween.to({speed: 0}, 3000, Phaser.Easing.Linear.InOut).start();
+            else if (middleRow.active) {
+                middleRow.active = false;
+                breakpoint = closest(middleRow.image.tilePosition.x, breakpoints[1]) + (Math.sign(middleRow.speed) * middleRow.width * 3);
+                middleRow.tween.to({x: breakpoint}, 4000, Phaser.Easing.Linear.In).start();
             }
-            else if (nextRowToStop < 3) {
-                bottomRow.tween.to({speed: 0}, 3000, Phaser.Easing.Linear.InOut).start();
+            else if (bottomRow.active) {
+                bottomRow.active = false;
+                breakpoint = closest(bottomRow.image.tilePosition.x, breakpoints[2]) + (Math.sign(bottomRow.speed) * bottomRow.width * 3);
+                bottomRow.tween.to({x: breakpoint}, 4000, Phaser.Easing.Linear.In).start();
             }
-            else {
-                nextRowToStop = 0;
-            }
-            nextRowToStop++;
         });
     }
     
@@ -71,7 +81,10 @@
     function render() {
         game.debug.text(topRow.image.tilePosition.x + "," + middleRow.image.tilePosition.x + "," + bottomRow.image.tilePosition.x, 0, 12);
     }
+    */
     
+    //returns the array element closest to the given number
+    //assumes all arguments are numbers
     function closest(number, array) {
         var closestIndex = 0;
         var minDiff = Number.MAX_VALUE;
@@ -84,5 +97,4 @@
         }
         return array[closestIndex];
     }
-    */
 //}());
