@@ -7,7 +7,7 @@
     var breakpoints = [
         [0, -124, -249],
         [0, 250, 125],
-        [0, -125, -251]
+        [0, -125, -250]
     ];
     
     var Row = function(x, y, width, height, key, speed) {
@@ -47,9 +47,9 @@
         middleRow = new Row(0, 39, 375, 53, 'middle', speed);
         bottomRow = new Row(0, 92, 375, 20, 'bottom', -speed);
         
-        //topRow.image.tilePosition.x = breakpoints[0][2];
-        //middleRow.image.tilePosition.x = breakpoints[1][2];
-        //bottomRow.image.tilePosition.x = breakpoints[2][2];
+        //topRow.image.tilePosition.x = breakpoints[0][0];
+        //middleRow.image.tilePosition.x = breakpoints[1][0];
+        //bottomRow.image.tilePosition.x = breakpoints[2][0];
         
         var breakpoint;
         game.input.onDown.add(function() {
@@ -60,13 +60,13 @@
             }
             else if (middleRow.active) {
                 middleRow.active = false;
-                breakpoint = closest(middleRow.image.tilePosition.x, breakpoints[1]) + (Math.sign(middleRow.speed) * middleRow.width * 3);
-                middleRow.tween.to({x: breakpoint}, 4000, Phaser.Easing.Linear.In).start();
+                breakpoint = closest(middleRow.image.tilePosition.x, breakpoints[1]) + (Math.sign(middleRow.speed) * middleRow.width * 2);
+                middleRow.tween.to({x: breakpoint}, 3000, Phaser.Easing.Linear.In).start();
             }
             else if (bottomRow.active) {
                 bottomRow.active = false;
-                breakpoint = closest(bottomRow.image.tilePosition.x, breakpoints[2]) + (Math.sign(bottomRow.speed) * bottomRow.width * 3);
-                bottomRow.tween.to({x: breakpoint}, 4000, Phaser.Easing.Linear.In).start();
+                breakpoint = closest(bottomRow.image.tilePosition.x, breakpoints[2]) + (Math.sign(bottomRow.speed) * bottomRow.width * 4);
+                bottomRow.tween.to({x: breakpoint}, 5000, Phaser.Easing.Linear.In).start();
             }
         });
     }
