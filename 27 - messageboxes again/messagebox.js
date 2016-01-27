@@ -10,7 +10,7 @@
     var limericks;
     
     function preload() {
-        game.load.audio('beep', ['beep.wav']);
+        game.load.audio('beep', ['beep.ogg', 'beep.wav']);
         game.load.text('limericks', 'limericks.json');
     }
     
